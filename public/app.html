@@ -2,6 +2,7 @@
 <span>Sign in to twitter</span></a>
 <div>
   <h3>Enter a Status</h3>
-  <textarea rows="5" cols="10"></textarea>
-  <button>Submit a post</button>
+  <textarea rows="5" cols="10" ng-model="mainCtrl.status"></textarea>
+  <button ng-click="mainCtrl.submit()">Submit a post</button>
 </div>
+<div><span ng-if="mainCtrl.message">{{mainCtrl.message}}</span></div>
