@@ -3,6 +3,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const path = require('path');
+const request = require('request');
 
 require('dotenv').config();
 
@@ -18,10 +19,12 @@ app.use(session({
 	secret: process.env.SECRET
 }));
 
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 app.post('/status/tweet', (req, res) => {
 	const body = req.body;
+
+	console.log(process.env.CONSUMER_KEY, process.env.TOKEN_SECRET)
 	const oauth = {
 		consumer_key: process.env.CONSUMER_KEY,
 		comsumer_secret: process.env.CONSUMER_SECRET,
@@ -36,8 +39,9 @@ app.post('/status/tweet', (req, res) => {
 	const url = 'https://api.twitter.com/1.1/statuses/update.json';
 
 	request.post({ url, oauth, qs, json: true }, (err, response, body) => {
+		console.log(err, response.statusCode, body);
 		if (err) {
-			if (response.statusCode === '32') {
+			if (response.statusCode === 401) {
 				return res.status(401).json({ error: 'Failed Authentication' });
 			}
 			return res.status(500).json({ error: 'Server error' });
@@ -47,7 +51,9 @@ app.post('/status/tweet', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	res.send('I am okay');
+	res.sendFile('index.html', {
+		root: '../public/'
+	});
 });
 
 const port = process.env.PORT || 9000;
