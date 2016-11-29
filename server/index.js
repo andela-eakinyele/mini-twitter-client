@@ -58,10 +58,10 @@ app.post('/status/tweet', (req, res) => {
 
   request.post({ url, oauth, qs, json: true }, (err, response, _body) => { // eslint-disable-line
     if (err) {
-      if (response.statusCode === 401) {
-        return res.status(401).json({ error: 'Failed Authentication' });
-      }
       return res.status(500).json({ error: 'Server error' });
+    }
+    if (response.statusCode === 401) {
+      return res.status(401).json({ error: 'Failed Authentication' });
     }
     return res.status(200).json({ message: 'Success post' });
   });
