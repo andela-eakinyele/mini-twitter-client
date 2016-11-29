@@ -7,7 +7,7 @@
     vm.submit = function () { // eslint-disable-line
       $http.post('/status/tweet', { status: vm.status })
         .then(function (res) { // eslint-disable-line
-          vm.message = res.message;
+          vm.message = res.data.message;
         })
         .catch(function (err) { // eslint-disable-line
           vm.message = err.error;

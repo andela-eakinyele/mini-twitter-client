@@ -3,21 +3,21 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const path = require('path');
 const request = require('request');
-const passport = require('passport');
-const TwitterStrategy = require('passport-twitter');
+// const passport = require('passport');
+// const TwitterStrategy = require('passport-twitter');
 
 require('dotenv').config();
 
 const app = express();
 
-passport.use(new TwitterStrategy({
-  consumerKey: process.env.CONSUMER_KEY,
-  consumerSecret: process.env.CONSUMER_SECRET,
-  callbackUrl: 'http://localhost:9000/auth/twitter/callback',
-  passReqToCallback: true,
-}, (req, token, tokenSecret, profile, done) => {
-  done(null);
-}));
+// passport.use(new TwitterStrategy({
+//   consumerKey: process.env.CONSUMER_KEY,
+//   consumerSecret: process.env.CONSUMER_SECRET,
+//   callbackUrl: 'http://localhost:9000/auth/twitter/callback',
+//   passReqToCallback: true,
+// }, (req, token, tokenSecret, profile, done) => {
+//   done(null);
+// }));
 
 
 app.use(bodyParser.json());
@@ -30,16 +30,15 @@ app.use(session({
   secret: process.env.SECRET,
 }));
 
-
-app.use(passport.initialize());
+// app.use(passport.initialize());
 
 app.use(express.static(path.resolve(__dirname, '../public')));
 
-app.get('/auth/twitter', passport.authenticate('twitter'));
+// app.get('/auth/twitter', passport.authenticate('twitter'));
 
-app.get('/auth/twitter/callback', (req, res) => {
-  res.redirect('/');
-});
+// app.get('/auth/twitter/callback', (req, res) => {
+//   res.redirect('/');
+// });
 
 app.post('/status/tweet', (req, res) => {
   const body = req.body;
@@ -64,8 +63,7 @@ app.post('/status/tweet', (req, res) => {
       }
       return res.status(500).json({ error: 'Server error' });
     }
-    console.log(_body);
-    return res.status(200).json({ message: _body.message });
+    return res.status(200).json({ message: 'Success post' });
   });
 });
 
