@@ -20,7 +20,6 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-
 app.post('/status/tweet', (req, res) => {
 	const body = req.body;
 	const oauth = {
@@ -28,10 +27,23 @@ app.post('/status/tweet', (req, res) => {
 		comsumer_secret: process.env.CONSUMER_SECRET,
 		token: process.env.TOKEN,
 		token_secret: process.env.TOKEN_SECRET
-	}
+	};
+
+	const qs = {
+		status: body.status
+	};
 
 	const url = 'https://api.twitter.com/1.1/statuses/update.json';
 
+	request.post({ url, oauth, qs, json: true }, (err, response, body) => {
+		if (err) {
+			if (response.statusCode === '32') {
+				return res.status(401).json({ error: 'Failed Authentication' });
+			}
+			return res.status(500).json({ error: 'Server error' });
+		}
+		return res.status(200).json({ message: body.message });
+	});
 });
 
 app.get('/', (req, res) => {
